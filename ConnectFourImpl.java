@@ -63,7 +63,7 @@ public class ConnectFourImpl implements ConnectFour {
         try{
             game.endGame();
         }catch (Exception e){
-            log.warn("Failed to end game successfully", e);
+            System.out.println("Failed to end game successfully: " + e.getMessage());
             return "{\"error\":\"Internal error while ending game\"}";
         }
         
