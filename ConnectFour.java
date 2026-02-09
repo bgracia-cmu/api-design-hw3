@@ -27,7 +27,7 @@ public interface ConnectFour {
      * </p>
      *
      * <p>
-     * <strong>Preconditions:</strong> No preconditions—you may call startGame()
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> No preconditions—you may call startGame()
      * on a fresh instance of the implementation or after endGame() is called.
      * </p>
      *
@@ -51,34 +51,65 @@ public interface ConnectFour {
      * game.startGame(null, "Bob");
      * </code>
      *                                  </pre>
+     * 
+     * @see ConnectFour#getGameState() for the expected return JSON format
      */
-
     String startGame(String player1, String player2);
 
-    // End game prematurely
-    String endGame(); // [Mark]
+    /**
+     * Ends the currently active game (if any) and returns its final state as a JSON string.
+     * 
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> None
+     * </p>
+     * 
+     * <p>This method transitions the game to an end state, after which
+     * no further moves, actions or modifications are permitted on this game instance.
+     * The returned JSON reflects the game's state after the end operation has been applied.</p>
+     *
+     * <p>If no game is currently active,
+     * this method returns a minimal error JSON object instead of attempting to end anything.</p>
+     *
+     * <p>The operation is effectively idempotent: calling this method multiple times
+     * on an already-ended game returns the same final state without further changes.</p>
+     *
+     * @return a JSON string containing one of the following:
+     *         <ul>
+     *             <li>the final game state (typically including cells, currentPlayer,
+     *                 winner if applicable.)</li>
+     *             <li>{{"error": "No game"}} — when no active game exists</li>
+     *         </ul>
+     *
+     * @see ConnectFour#getGameState() for the expected return JSON format
+     */
+    String endGame();
 
     /**
      * Conducts a game turn for the specified player and column.
      * A turn involves placing the player's checker in the specified column,
      * allowing it to fall to the lowest unoccupied space.
      * 
-     * @pre
-     * Preconditions:
+     * 
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong>
+     * <br>
      * - The game must be ongoing
-     * 
+     * <br>
      * - The specified column should not be full
+     * </p>
      * 
-     * @post
-     * Postconditions:
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Postconditions:</strong>
+     * <br>
      * - The player's checker is placed in the lowest available space in the specified column.
-     * 
+     * <br>
      * - The game state is updated to reflect the new move
+     * </p>
      * 
      * @param column int [0-6] where the player wants to place their checker.
      * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
      * @throws IllegalStateException if the game has not been started or has already ended.
-     * @see ConnectFour.getGameState() for the expected return JSON format
+     * @see ConnectFour#getGameState() for the expected return JSON format
      * @return the current game state in JSON format
      */
     String takeTurn(int column);
@@ -86,7 +117,11 @@ public interface ConnectFour {
     /**
      * Returns the current state of the game in JSON format.
      * 
-     * Example game state JSON for a game in progress during turn 4 with BLACK to move next:
+     * <p> 
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> None
+     * </p>
+     * 
+     * <p>Example game state JSON for a game in progress during turn 4 with BLACK to move next </p>
     <pre>
     {
         "cells": [
