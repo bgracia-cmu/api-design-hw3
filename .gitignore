@@ -1,5 +1,5 @@
 # Compiled output (SAFE to re-enable for simple projects)
-# *.class    ← COMMENT THIS OUT temporarily
+*.class    ← COMMENT THIS OUT temporarily
 
 # IDE files
 .idea/
