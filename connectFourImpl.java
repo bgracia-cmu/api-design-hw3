@@ -1,32 +1,39 @@
-// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+
 public class connectFourImpl implements connectFour {
     private Game game;
     private String player1Name;
     private String player2Name;
 
-    public connectFourImpl() {
-    }
-
-    public String startGame(String var1, String var2) {
-        this.player1Name = var1;
-        this.player2Name = var2;
+    @Override
+    public String startGame(String player1, String player2) {
+        this.player1Name = player1;
+        this.player2Name = player2;
         this.game = new Game();
-        return this.game.getGameStateJson();
+        return game.getGameStateJson();
     }
 
+    @Override
     public String endGame() {
-        if (this.game != null) {
-            this.game.endGame();
+        if (game != null) {
+            game.endGame();
         }
-
-        return this.game != null ? this.game.getGameStateJson() : "{\"error\": \"No game\"}";
+        return game != null ? game.getGameStateJson() : "{\"error\": \"No game\"}";
     }
 
-    public String takeTurn(String var1, int var2) {
-        return this.game == null ? "{\"error\": \"Game not started\"}" : this.game.getGameStateJson();
+    @Override
+    public String takeTurn(String player, int col) {
+        if (game == null) {
+            return "{\"error\": \"Game not started\"}";
+        }
+        boolean success = game.takeTurn(col);
+        return game.getGameStateJson();
     }
 
+    @Override
     public String returnGameState() {
-        return this.game == null ? "{\"error\": \"Game not started\"}" : this.game.getGameStateJson();
+        if (game == null) {
+            return "{\"error\": \"Game not started\"}";
+        }
+        return game.getGameStateJson();
     }
 }
