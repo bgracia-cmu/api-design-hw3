@@ -19,6 +19,42 @@
  */
 interface connectFour {
 
+    /**
+     * Initialize a new Connect 4 game with specified player names.
+     *
+     * <p>
+     * Initializes an empty 6x7 board and allows for new turns to be played.
+     * with RED as the current player (player1). Subsequent calls to startGame()
+     * will reset the game. Resets all cells to empty board.
+     * </p>
+     *
+     * <p>
+     * <strong>Preconditions:</strong> No preconditions—you may call startGame()
+     * on a fresh instance of the implementation or after endGame() is called.
+     * </p>
+     *
+     * @param player1 First player name. This player will have RED checkers.
+     *                1-20 chars, cannot be null.
+     * @param player2 Second player name. This player will have BLACK checkers.
+     *                1-20 chars, cannot be null.
+     * @return JSON of initial empty game state
+     * @throws IllegalArgumentException if player1 or player2 is null or >20 chars
+     *
+     *                                  <p>
+     *                                  <strong>Example:</strong>
+     *                                  </p>
+     *
+     *                                  <pre>
+     * <code>
+     * // Returns the initial board.
+     * String result1 = game.startGame("Alice", "Bob");
+     *
+     * // Throws an IllegalArgumentException because Player1 is null.
+     * game.startGame(null, "Bob");
+     * </code>
+     *                                  </pre>
+     */
+
     String startGame(String player1, String player2);
 
     // End game prematurely
