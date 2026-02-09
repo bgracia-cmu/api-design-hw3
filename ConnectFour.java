@@ -15,7 +15,7 @@
     }
  </pre>
  */
-interface ConnectFour {
+public interface ConnectFour {
 
     /**
      * Initialize a new Connect 4 game with specified player names.
@@ -27,7 +27,7 @@ interface ConnectFour {
      * </p>
      *
      * <p>
-     * <strong>Preconditions:</strong> No preconditions—you may call startGame()
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> No preconditions—you may call startGame()
      * on a fresh instance of the implementation or after endGame() is called.
      * </p>
      *
@@ -51,13 +51,18 @@ interface ConnectFour {
      * game.startGame(null, "Bob");
      * </code>
      *                                  </pre>
+     * 
+     * @see ConnectFour#getGameState() for the expected return JSON format
      */
-
     String startGame(String player1, String player2);
 
     /**
      * Ends the currently active game (if any) and returns its final state as a JSON string.
-     *
+     * 
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> None
+     * </p>
+     * 
      * <p>This method transitions the game to an end state, after which
      * no further moves, actions or modifications are permitted on this game instance.
      * The returned JSON reflects the game's state after the end operation has been applied.</p>
@@ -75,8 +80,7 @@ interface ConnectFour {
      *             <li>{{"error": "No game"}} — when no active game exists</li>
      *         </ul>
      *
-     * @see Game#endGame()
-     * @see Game#getGameStateJson()
+     * @see ConnectFour#getGameState() for the expected return JSON format
      */
     String endGame();
 
@@ -85,17 +89,22 @@ interface ConnectFour {
      * A turn involves placing the player's checker in the specified column,
      * allowing it to fall to the lowest unoccupied space.
      * 
-     * @pre
-     * Preconditions:
+     * 
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong>
+     * <br>
      * - The game must be ongoing
-     * 
+     * <br>
      * - The specified column should not be full
+     * </p>
      * 
-     * @post
-     * Postconditions:
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Postconditions:</strong>
+     * <br>
      * - The player's checker is placed in the lowest available space in the specified column.
-     * 
+     * <br>
      * - The game state is updated to reflect the new move
+     * </p>
      * 
      * @param column int [0-6] where the player wants to place their checker.
      * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
@@ -108,7 +117,11 @@ interface ConnectFour {
     /**
      * Returns the current state of the game in JSON format.
      * 
-     * Example game state JSON for a game in progress during turn 4 with BLACK to move next:
+     * <p> 
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> None
+     * </p>
+     * 
+     * <p>Example game state JSON for a game in progress during turn 4 with BLACK to move next </p>
     <pre>
     {
         "cells": [
