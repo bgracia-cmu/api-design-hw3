@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,14 +11,30 @@ public class TextClient {
         printGameState(state);
 
         Scanner scanner = new Scanner(System.in);
+        boolean gameWon = false;
 
         while (true) {
-            System.out.print("\nColumns: [0][1][2][3][4][5][6]  Enter column (0-6) or 'q': ");
+            // Check if game is won before prompting
+            if (state.contains("\"winner\": \"RED\"") || state.contains("\"winner\": \"BLACK\"")) {
+                gameWon = true;
+            }
+
+            if (gameWon) {
+                System.out.print("\nPress q to quit: ");
+            } else {
+                System.out.print("\nColumns: [0][1][2][3][4][5][6]  Enter column (0-6) or 'q': ");
+            }
+
             String input = scanner.nextLine().trim();
 
             if (input.equalsIgnoreCase("q")) {
                 System.out.println("Game ended.");
                 break;
+            }
+
+            if (gameWon) {
+                System.out.println("Game over! Press 'q' to quit.");
+                continue;
             }
 
             try {
