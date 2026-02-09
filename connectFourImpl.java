@@ -1,5 +1,5 @@
 
-public class connectFourImpl implements connectFour {
+public class ConnectFourImpl implements ConnectFour {
     private Game game;
     private String player1Name;
     private String player2Name;
@@ -72,7 +72,7 @@ public class connectFourImpl implements connectFour {
     }
 
     @Override
-    public String returnGameState() {
+    public String getGameState() {
         if (game == null) {
             return "{\"error\": \"Game not started\"}";
         }

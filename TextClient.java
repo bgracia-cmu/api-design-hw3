@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class TextClient {
     public static void main(String[] args) {
-        connectFourImpl game = new connectFourImpl();
+        ConnectFourImpl game = new ConnectFourImpl();
 
         System.out.println("=== Connect 4 Game Started (6x7) ===");
         String state = game.startGame("Player1", "Player2");
