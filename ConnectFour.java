@@ -1,5 +1,3 @@
-
-
 /**
  * Supports playing Connect 4 games between two players on a fixed 6x7 board.
  * Instances represent a single game following standard Connect 4 rules. 
