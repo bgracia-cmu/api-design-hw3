@@ -72,7 +72,7 @@ interface ConnectFour {
      *         <ul>
      *             <li>the final game state (typically including cells, currentPlayer,
      *                 winner if applicable.)</li>
-     *             <li>{@code {"error": "No game"}} — when no active game exists</li>
+     *             <li>{{"error": "No game"}} — when no active game exists</li>
      *         </ul>
      *
      * @see Game#endGame()
@@ -100,7 +100,7 @@ interface ConnectFour {
      * @param column int [0-6] where the player wants to place their checker.
      * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
      * @throws IllegalStateException if the game has not been started or has already ended.
-     * @see ConnectFour.getGameState() for the expected return JSON format
+     * @see ConnectFour#getGameState() for the expected return JSON format
      * @return the current game state in JSON format
      */
     String takeTurn(int column);
