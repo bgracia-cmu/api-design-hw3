@@ -15,7 +15,7 @@
     }
  </pre>
  */
-interface ConnectFour {
+public interface ConnectFour {
 
     /**
      * Initialize a new Connect 4 game with specified player names.
