@@ -17,7 +17,7 @@
     }
  </pre>
  */
-interface connectFour {
+interface ConnectFour {
 
     String startGame(String player1, String player2);
 
@@ -44,14 +44,15 @@ interface connectFour {
      * @param column int [0-6] where the player wants to place their checker.
      * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
      * @throws IllegalStateException if the game has not been started or has already ended.
-     * @return the current game state in JSON format @see Game.getGameStateJson() for the expected structure.
+     * @see ConnectFour.getGameState() for the expected return JSON format
+     * @return the current game state in JSON format
      */
     String takeTurn(int column);
 
     /**
      * Returns the current state of the game in JSON format.
      * 
-     * Example game state JSON for a game in progress during turn 4 with RED to move next:
+     * Example game state JSON for a game in progress during turn 4 with BLACK to move next:
     <pre>
     {
         "cells": [
@@ -78,7 +79,8 @@ interface connectFour {
      * - "winner" indicates the winning player, 
      * with Checker or null otherwise
      * 
+     * @see Checker for possible Checker values.
      * @return the current game state in JSON format
      */
-    String returnGameState();
+    String getGameState();
 }
