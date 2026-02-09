@@ -114,14 +114,16 @@ public class Game {
 
     public String getGameStateJson() {
         String cellsJson = getCellsJson();
-        String currentPlayerStr = currentPlayer != null ? currentPlayer.name() : "none";
-        String winnerStr = winner != null ? winner.name() : "none";
+
+        // Convert currentPlayer and winner to JSON-friendly strings (keep null value intact)
+        String currentPlayerStr = currentPlayer != null ? ("\"" + currentPlayer.name() + "\"") : "null";
+        String winnerStr = winner != null ? ("\"" + winner.name() + "\"") : "null";
 
         return String.format("""
                 {
                     "cells": %s,
-                    "currentPlayer": "%s",
-                    "winner": "%s"
+                    "currentPlayer": %s,
+                    "winner": %s
                 }
                 """, cellsJson, currentPlayerStr, winnerStr);
     }
@@ -132,8 +134,8 @@ public class Game {
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 7; col++) {
                 Checker checker = board.getSpace(row, col).getOccupiedBy();
-                String value = checker != null ? checker.name() : "empty";
-                cells.add("\"" + value + "\"");
+                String value = checker != null ? "\"" + checker.name() + "\"" : "null";
+                cells.add(value);
             }
         }
 
