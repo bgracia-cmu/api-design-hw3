@@ -1,0 +1,12 @@
+# Compiled output (SAFE to re-enable for simple projects)
+# *.class    ← COMMENT THIS OUT temporarily
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Logs/build
+target/
+out/
+*.log
