@@ -56,10 +56,18 @@ public class ConnectFourImpl implements ConnectFour {
 
     @Override
     public String endGame() {
-        if (game != null) {
-            game.endGame();
+        if (game == null) {
+            return "{\"error\": \"No game\"}";
         }
-        return game != null ? game.getGameStateJson() : "{\"error\": \"No game\"}";
+        
+        try{
+            game.endGame();
+        }catch (Exception e){
+            log.warn("Failed to end game successfully", e);
+            return "{\"error\":\"Internal error while ending game\"}";
+        }
+        
+        return game.getGameStateJson();
     }
 
     @Override

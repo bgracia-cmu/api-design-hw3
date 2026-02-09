@@ -55,8 +55,30 @@ interface ConnectFour {
 
     String startGame(String player1, String player2);
 
-    // End game prematurely
-    String endGame(); // [Mark]
+    /**
+     * Ends the currently active game (if any) and returns its final state as a JSON string.
+     *
+     * <p>This method transitions the game to an end state, after which
+     * no further moves, actions or modifications are permitted on this game instance.
+     * The returned JSON reflects the game's state after the end operation has been applied.</p>
+     *
+     * <p>If no game is currently active,
+     * this method returns a minimal error JSON object instead of attempting to end anything.</p>
+     *
+     * <p>The operation is effectively idempotent: calling this method multiple times
+     * on an already-ended game returns the same final state without further changes.</p>
+     *
+     * @return a JSON string containing one of the following:
+     *         <ul>
+     *             <li>the final game state (typically including cells, currentPlayer,
+     *                 winner if applicable.)</li>
+     *             <li>{@code {"error": "No game"}} — when no active game exists</li>
+     *         </ul>
+     *
+     * @see Game#endGame()
+     * @see Game#getGameStateJson()
+     */
+    String endGame();
 
     /**
      * Conducts a game turn for the specified player and column.
