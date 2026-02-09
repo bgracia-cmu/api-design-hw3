@@ -44,7 +44,7 @@ public class TextClient {
                     continue;
                 }
 
-                state = game.takeTurn("Player1", col);
+                state = game.takeTurn(col);
                 printGameState(state);
 
             } catch (NumberFormatException e) {
@@ -66,7 +66,7 @@ public class TextClient {
     }
 
     private static String[] extractCells(String json) {
-        // Extract cells array from JSON: "cells": ["empty","RED",...]
+        // Extract cells array from JSON: "cells": [null,"RED",...]
         Pattern pattern = Pattern.compile("\"cells\":\\s*\\[([^\\]]*)\\]");
         Matcher matcher = pattern.matcher(json);
         if (!matcher.find())

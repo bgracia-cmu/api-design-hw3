@@ -63,11 +63,11 @@ public class connectFourImpl implements connectFour {
     }
 
     @Override
-    public String takeTurn(String player, int col) {
+    public String takeTurn(int column) {
         if (game == null) {
             return "{\"error\": \"Game not started\"}";
         }
-        boolean success = game.takeTurn(col);
+        boolean success = game.takeTurn(column);
         return game.getGameStateJson();
     }
 
