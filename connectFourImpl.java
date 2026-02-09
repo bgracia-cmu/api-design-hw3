@@ -6,6 +6,13 @@ public class connectFourImpl implements connectFour {
 
     @Override
     public String startGame(String player1, String player2) {
+        if (player1 == null || player2 == null) {
+            throw new IllegalArgumentException("Player names cannot be null");
+        }
+        if (player1.length() > 20 || player2.length() > 20) {
+            throw new IllegalArgumentException("Player names cannot exceed 20 characters");
+        }
+
         this.player1Name = player1;
         this.player2Name = player2;
         this.game = new Game();
