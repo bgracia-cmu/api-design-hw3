@@ -85,10 +85,9 @@ public interface ConnectFour {
     String endGame();
 
     /**
-     * Conducts a game turn for the specified player and column.
+     * Conducts a game turn for the current player and column.
      * A turn involves placing the player's checker in the specified column,
      * allowing it to fall to the lowest unoccupied space.
-     * 
      * 
      * <p>
      * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong>

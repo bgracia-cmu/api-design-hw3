@@ -1,5 +1,6 @@
 # Compiled output (SAFE to re-enable for simple projects)
 *.class 
+docs/
 
 # IDE files
 .idea/
