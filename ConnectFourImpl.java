@@ -55,6 +55,22 @@ public class ConnectFourImpl implements ConnectFour {
     }
 
     @Override
+    public String resetGame() {
+        if (player1Name == null || player2Name == null) {
+            return "{\"error\": \"No game\"}";
+        }
+
+        try {
+            startGame(player1Name, player2Name);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Failed to reset game: " + e.getMessage());
+            return "{\"error\":\"Internal error while resetting game\"}";
+        }
+
+        return game.getGameStateJson();
+    }
+
+    @Override
     public String endGame() {
         if (game == null) {
             return "{\"error\": \"No game\"}";

@@ -57,6 +57,49 @@ public interface ConnectFour {
     String startGame(String player1, String player2);
 
     /**
+     * Resets the currently active game to a fresh initial state and returns the new
+     * empty game state as JSON.
+     * 
+     * <p>
+     * <strong style="font-family: Arial; font-size:
+     * 0.856em">Preconditions:</strong> None—you may call resetGame()
+     * on a fresh instance of the implementation or after endGame() is called.
+     * </p>
+     * 
+     * <p>
+     * This method recreates a new 6x7 empty board with the same player names as the
+     * previous game,
+     * sets the internal game state to Active with RED as the current player
+     * (player1).
+     * All cells are reset to empty. Subsequent calls to resetGame() will create
+     * additional new games.
+     * </p>
+     *
+     * <p>
+     * If no previous game exists with stored player names,
+     * this method returns a minimal error JSON object.
+     * </p>
+     *
+     * <p>
+     * The operation uses previously stored player names from the last valid
+     * startGame() call.
+     * Calling resetGame() without a prior startGame() will fail with an error.
+     * </p>
+     *
+     * @return a JSON string containing one of the following:
+     *         <ul>
+     *         <li>the initial empty game state (empty 6x7 cells array,
+     *         currentPlayer:"RED", winner:"none")</li>
+     *         <li>{"error": "No game"} — when no previous game with player names
+     *         exists</li>
+     *         </ul>
+     *
+     * @see #startGame(String, String) for initial game creation with player names
+     * @see ConnectFour#getGameState() for the expected return JSON format
+     */
+    String resetGame();
+
+    /**
      * Ends the currently active game (if any) and returns its final state as a JSON string.
      * 
      * <p>
