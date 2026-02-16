@@ -158,6 +158,17 @@ public interface ConnectFour {
      *         Error messages are {"error": "Invalid move"} or 
      *         {"error": "Game not active"} as appropriate.
      *         
+     * <pre>
+     * <code>
+     * // Example of a valid move returning the updated game state.
+     * String result1 = game.takeTurn(3);  
+     * 
+     * // Example of the client checking the valid move for an error JSON.
+     * if (result1.contains("error")) {
+     *     // Handle error case
+     * }
+     * </code>
+     * </pre>     
      */
     String takeTurn(int column);
 
