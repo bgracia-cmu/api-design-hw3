@@ -133,7 +133,8 @@ public interface ConnectFour {
      * allowing it to fall to the lowest unoccupied space.
      * 
      * <p>
-     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong>
+     * <strong style="font-family: Arial; font-size:
+     * 0.856em">Preconditions:</strong>
      * <br>
      * - The game must be ongoing
      * <br>
@@ -141,18 +142,22 @@ public interface ConnectFour {
      * </p>
      * 
      * <p>
-     * <strong style="font-family: Arial; font-size: 0.856em">Postconditions:</strong>
+     * <strong style="font-family: Arial; font-size:
+     * 0.856em">Postconditions:</strong>
      * <br>
-     * - The player's checker is placed in the lowest available space in the specified column.
+     * - The player's checker is placed in the lowest available space in the
+     * specified column.
      * <br>
      * - The game state is updated to reflect the new move
      * </p>
      * 
      * @param column int [0-6] where the player wants to place their checker.
-     * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
-     * @throws IllegalStateException if the game has not been started or has already ended.
      * @see ConnectFour#getGameState() for the expected return JSON format
-     * @return the current game state in JSON format
+     * @return the current game state in JSON format, or an error JSON if the
+     *         move is invalid. 
+     *         Error messages are {"error": "Invalid move"} or 
+     *         {"error": "Game not active"} as appropriate.
+     *         
      */
     String takeTurn(int column);
 

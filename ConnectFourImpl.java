@@ -92,6 +92,9 @@ public class ConnectFourImpl implements ConnectFour {
             return "{\"error\": \"Game not started\"}";
         }
         boolean success = game.takeTurn(column);
+        if (!success) {
+            return "{\"error\": \"Invalid move\"}";
+        }
         return game.getGameStateJson();
     }
 
