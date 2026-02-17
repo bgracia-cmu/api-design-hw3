@@ -7,7 +7,7 @@ public class TextClient {
         ConnectFourImpl game = new ConnectFourImpl();
 
         System.out.println("=== Connect 4 Game Started (6x7) ===");
-        String state = game.startGame("Player1", "Player2");
+        String state = game.startGame("Player1", "Player2", "blacks");
         printGameState(state);
 
         Scanner scanner = new Scanner(System.in);

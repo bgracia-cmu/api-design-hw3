@@ -35,6 +35,50 @@ public interface ConnectFour {
      *                1-20 chars, cannot be null.
      * @param player2 Second player name. This player will have BLACK checkers.
      *                1-20 chars, cannot be null.
+     * @param player1CheckerPreference First player checker color preference. This
+     *                                 is optional and will default to RED if an
+     *                                 empty or invalid input is provided.
+     *
+     * @return JSON of initial empty game state
+     * @throws IllegalArgumentException if player1 or player2 is null or >20 chars
+     *
+     *                                  <p>
+     *                                  <strong>Example:</strong>
+     *                                  </p>
+     *
+     *                                  <pre>
+     * <code>
+     * // Returns the initial board.
+     * String result1 = game.startGame("Alice", "Bob", "Red");
+     *
+     * // Throws an IllegalArgumentException because Player1 is null.
+     * game.startGame(null, "Bob", "Reds");
+     * </code>
+     *                                  </pre>
+     * 
+     * @see ConnectFour#getGameState() for the expected return JSON format
+     */
+    String startGame(String player1, String player2, String player1CheckerPreference);
+
+    /**
+     * Initialize a new Connect 4 game with specified player names.
+     *
+     * <p>
+     * Initializes an empty 6x7 board and allows for new turns to be played.
+     * with RED as the current player (player1). Subsequent calls to startGame()
+     * will reset the game. Resets all cells to empty board.
+     * </p>
+     *
+     * <p>
+     * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong> No preconditions—you may call startGame()
+     * on a fresh instance of the implementation or after endGame() is called.
+     * </p>
+     *
+     * @param player1 First player name. This player will have RED checkers.
+     *                1-20 chars, cannot be null.
+     * @param player2 Second player name. This player will have BLACK checkers.
+     *                1-20 chars, cannot be null.
+     *
      * @return JSON of initial empty game state
      * @throws IllegalArgumentException if player1 or player2 is null or >20 chars
      *
@@ -51,7 +95,7 @@ public interface ConnectFour {
      * game.startGame(null, "Bob");
      * </code>
      *                                  </pre>
-     * 
+     *
      * @see ConnectFour#getGameState() for the expected return JSON format
      */
     String startGame(String player1, String player2);
@@ -132,7 +176,10 @@ public interface ConnectFour {
                 null,null,"BLACK",null,null,null,null, // row 4
                 null,null,"RED",null,null,null,null    // row 5
         ],        
-        "currentPlayer": "BLACK",
+        "currentPlayerName": "player2",
+        "currentPlayerChecker": "BLACK",
+        "player1Color": "RED",
+        "player2Color": "BLACK",
         "winner": null
     }
     </pre>
@@ -141,9 +188,15 @@ public interface ConnectFour {
      * - "cells" is a flat array representing the board from top-left to bottom-right,
      * with Checker if filled or null otherwise
      * 
-     * - "currentPlayer" indicates whose turn it is next, 
+     * - "currentPlayerChecker" indicates whose turn it is next,
      * with Checker or null otherwise
-     * 
+     *
+     * - "currentPlayerName" shows the name of the current player
+     *
+     * - "player1Color" shows player 1's preferred color
+     *
+     * - "player2Color" shows player 2's preferred color
+     *
      * - "winner" indicates the winning player, 
      * with Checker or null otherwise
      * 
