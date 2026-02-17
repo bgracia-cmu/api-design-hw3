@@ -5,8 +5,9 @@ import java.util.List;
 public class Game {
     private final Board board;
     private Checker currentPlayer;
-    private Checker winner;
+    private String winner;
     private boolean gameOver;
+    private static final String DRAW_VALUE = "Draw";
 
     public Game() {
         this.board = new Board();
@@ -26,12 +27,13 @@ public class Game {
         }
 
         if (checkWin(currentPlayer)) {
-            this.winner = currentPlayer;
+            this.winner = currentPlayer.name();
             this.gameOver = true;
             return true;
         }
 
         if (isBoardFull()) {
+            this.winner = DRAW_VALUE;
             this.gameOver = true;
             return true;
         }
@@ -117,7 +119,7 @@ public class Game {
 
         // Convert currentPlayer and winner to JSON-friendly strings (keep null value intact)
         String currentPlayerStr = currentPlayer != null ? ("\"" + currentPlayer.name() + "\"") : "null";
-        String winnerStr = winner != null ? ("\"" + winner.name() + "\"") : "null";
+        String winnerStr = winner != null ? ("\"" + winner + "\"") : "null";
 
         return String.format("""
                 {
