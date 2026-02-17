@@ -1,117 +1,136 @@
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TextClient {
-    public static void main(String[] args) {
-        ConnectFourImpl game = new ConnectFourImpl();
+    private static ConnectFour game = new ConnectFourImpl();
+    private static Scanner scanner = new Scanner(System.in);
 
+    public static void main(String[] args) {
         System.out.println("=== Connect 4 Game Started (6x7) ===");
-        String state = game.startGame("Player1", "Player2", "blacks");
-        printGameState(state);
+
+        String state = game.startGame("Player1", "Player2");
+        printState(state);
 
         Scanner scanner = new Scanner(System.in);
-        boolean gameWon = false;
 
         while (true) {
-            // Check if game is won before prompting
-            if (state.contains("\"winner\": \"RED\"") || state.contains("\"winner\": \"BLACK\"")) {
-                gameWon = true;
-            }
+            String input = promptUser(state);
 
-            if (gameWon) {
-                System.out.print("\nPress q to quit: ");
-            } else {
-                System.out.print("\nColumns: [0][1][2][3][4][5][6]  Enter column (0-6) or 'q': ");
-            }
-
-            String input = scanner.nextLine().trim();
-
-            if (input.equalsIgnoreCase("q")) {
+            if (input.equals("q")) {
                 System.out.println("Game ended.");
                 break;
             }
 
-            if (gameWon) {
-                System.out.println("Game over! Press 'q' to quit.");
+            int col = parseColumn(input);
+            if (col == -1) {
                 continue;
             }
 
-            try {
-                int col = Integer.parseInt(input);
-                if (col < 0 || col > 6) {
-                    System.out.println("Please enter a number 0-6");
-                    continue;
-                }
-
-                state = game.takeTurn(col);
-                printGameState(state);
-
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a number 0-6");
-            }
+            state = game.takeTurn(col);
+            printState(state);
         }
         scanner.close();
     }
 
-    private static void printGameState(String json) {
-        String[] cells = extractCells(json);
-        if (cells == null) {
-            System.out.println("Error parsing game state");
+    private static String promptUser(String state) {
+        GameInfo info = parseState(state);
+
+        if (info.isError() || info.hasWinner()) {
+            System.out.print("\nGame over! Press q to quit: ");
+        } else {
+            System.out.printf("\nNext: %s  Enter column (0-6) or q: ", info.currentPlayer);
+        }
+
+        return scanner.nextLine().trim().toLowerCase();
+    }
+
+    private static int parseColumn(String input) {
+        try {
+            int col = Integer.parseInt(input);
+            if (col >= 0 && col <= 6) {
+                return col;
+            }
+            System.out.println("Please enter 0-6");
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter number 0-6 or q");
+        }
+        return -1;
+    }
+
+    private static void printState(String json) {
+        GameInfo info = parseState(json);
+        if (info.isError()) {
+            System.out.println("Error: " + info.error);
             return;
         }
 
-        printBoard(cells);
-        printGameInfo(json);
+        printBoard(info.cells);
+        if (info.hasWinner()) {
+            System.out.println(info.winner.equals("RED") ? " RED WINS! " : " BLACK WINS! ");
+        } else {
+            System.out.printf("Next: %s%n%n", info.currentPlayer);
+        }
     }
 
-    private static String[] extractCells(String json) {
-        // Extract cells array from JSON: "cells": [null,"RED",...]
-        Pattern pattern = Pattern.compile("\"cells\":\\s*\\[([^\\]]*)\\]");
-        Matcher matcher = pattern.matcher(json);
-        if (!matcher.find())
-            return null;
+    private static GameInfo parseState(String json) {
+        GameInfo info = new GameInfo();
 
-        String cellsStr = matcher.group(1);
-        String[] cells = cellsStr.split(",");
-        // Clean up quotes
-        for (int i = 0; i < cells.length; i++) {
-            cells[i] = cells[i].replaceAll("[\"']", "").trim();
+        // Error check first
+        if (json.contains("\"error\"")) {
+            String[] parts = json.split("\"error\"\\s*:\\s*\"");
+            if (parts.length > 1) {
+                info.error = parts[1].replace("\"", "").replace("}", "");
+            }
+            return info;
         }
-        return cells;
+
+        // Extract cells array
+        int cellsStart = json.indexOf("\"cells\":") + 8;
+        int cellsEnd = json.indexOf("]", cellsStart);
+        if (cellsStart < 8 || cellsEnd == -1)
+            return info;
+
+        String[] cellsRaw = json.substring(cellsStart, cellsEnd).split(",");
+
+        // Parse cells to display format (. R B)
+        for (int i = 0; i < 42 && i < cellsRaw.length; i++) {
+            String cell = cellsRaw[i].replaceAll("[\"\\s]", "");
+            info.cells[i] = "RED".equals(cell) ? "R" : "BLACK".equals(cell) ? "B" : ".";
+        }
+
+        // Parse currentPlayer & winner
+        info.currentPlayer = json.contains("\"currentPlayer\": \"RED\"") ? "RED" : "BLACK";
+        info.winner = json.contains("\"winner\": \"RED\"") ? "RED"
+                : (json.contains("\"winner\": \"BLACK\"") ? "BLACK" : null);
+
+        return info;
     }
 
     private static void printBoard(String[] cells) {
-        System.out.println("\n     0   1   2   3   4   5   6     ← Columns");
+        System.out.println("\n     0   1   2   3   4   5   6   ← Columns");
         System.out.println("  +-----------------------------+");
 
         for (int row = 0; row < 6; row++) {
             System.out.print(" " + row + " |");
             for (int col = 0; col < 7; col++) {
-                int idx = row * 7 + col;
-                String cell = cells[idx];
-                if ("RED".equals(cell)) {
-                    System.out.print(" R  ");
-                } else if ("BLACK".equals(cell)) {
-                    System.out.print(" B  ");
-                } else {
-                    System.out.print(" .  ");
-                }
+                System.out.print(" " + cells[row * 7 + col] + "  ");
             }
             System.out.println("|");
             System.out.println("  +-----------------------------+");
         }
     }
 
-    private static void printGameInfo(String json) {
-        if (json.contains("\"winner\": \"RED\"")) {
-            System.out.println(" RED WINS! ");
-        } else if (json.contains("\"winner\": \"BLACK\"")) {
-            System.out.println(" BLACK WINS! ");
-        } else {
-            String current = json.contains("\"currentPlayer\": \"RED\"") ? "RED" : "BLACK";
-            System.out.println("Next: " + current);
+    private static class GameInfo {
+        String[] cells = new String[42];
+        String currentPlayer = "RED";
+        String winner = null;
+        String error = null;
+
+        boolean isError() {
+            return error != null;
         }
-        System.out.println();
+
+        boolean hasWinner() {
+            return winner != null;
+        }
     }
 }
