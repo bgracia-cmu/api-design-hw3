@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class TextClient {
-    private static ConnectFour game = new ConnectFourImpl();
+    private static ConnectFourJSON game = new ConnectFourImpl();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {

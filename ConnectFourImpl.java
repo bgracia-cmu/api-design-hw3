@@ -1,5 +1,5 @@
 
-public class ConnectFourImpl implements ConnectFour {
+public class ConnectFourImpl implements ConnectFourJSON {
     private Game game;
     private String player1Name;
     private String player2Name;

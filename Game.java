@@ -9,8 +9,9 @@ public class Game {
     private final String player2Name;
     private final Checker player1Checker;
 
-    private Checker winner;
+    private String winner;
     private boolean gameOver;
+    private static final String DRAW_VALUE = "Draw";
 
     public Game(String player1, String player2, Checker player1CheckerPreference){
         this.board = new Board();
@@ -35,12 +36,13 @@ public class Game {
         }
 
         if (checkWin(currentPlayerChecker)) {
-            this.winner = currentPlayerChecker;
+            this.winner = currentPlayerChecker.toString();
             this.gameOver = true;
             return true;
         }
 
         if (isBoardFull()) {
+            this.winner = DRAW_VALUE;
             this.gameOver = true;
             return true;
         }
@@ -126,7 +128,7 @@ public class Game {
         String cellsJson = getCellsJson();
 
         // Convert currentPlayer and winner to JSON-friendly strings (keep null value intact)
-        String currentPlayerStr = currentPlayerChecker != null ? ("\"" + getCurrentPlayerName() + "\"") : "null";
+        String currentPlayerStr = currentPlayerChecker != null ? ("\"" + currentPlayerChecker + "\"") : "null";
         String winnerStr = winner != null ? ("\"" + winner + "\"") : "null";
         String player1Color = player1Checker.toString();
         String player2Color = player1Checker.opponent().toString();

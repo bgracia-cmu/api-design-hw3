@@ -4,23 +4,36 @@
  * The RED player starts, and players alternate dropping pieces into columns 0-6. 
  * The first to achieve four pieces in a row horizontally or diagonally wins. 
  * All game states are maintained internally and exposed via JSON responses.
- *
  * 
+ * <p><b>Note:</b> The String returned by all methods is a JSON-formatted
+ * representation of the game state. Clients should parse this JSON to retrieve
+ * the {@code cells}, {@code currentPlayer}, and {@code winner} status.
+ * This allows language-agnostic implementations 
+ * and encourages clean separation between game logic (backend) and UI (frontend). 
+ * In Java, for example, JSON libraries such as 
+ * <a href="https://github.com/FasterXML/jackson">Jackson</a> or 
+ * <a href="https://google.github.io/gson/">Gson</a> can be used.
+ * </p>
+ *
  * Game state JSON structure:
- <pre>
-    {
-        "cells": [null|"RED"|"BLACK"],   // 42 total cells
-        "currentPlayer": "RED"|"BLACK",  // Next player to move
-        "winner": "RED"|"BLACK"|null     // null = Active game
-    }
- </pre>
+ * <pre>
+ *  {
+ *      "cells": [null|"RED"|"BLACK"],   // 42 total cells
+ *      "currentPlayerName": String|null, // null if game not active
+ *      "currentPlayerChecker": "RED"|"BLACK",  // Next player to move
+ *      "player1Color": "RED"|"BLACK",  // Player 1's checker color
+ *      "player2Color": "RED"|"BLACK",  // Player 2's checker color
+ *      "winner": "RED"|"BLACK"|"Draw"|null     // null = Active game, CHECKER = Winner, "Draw" = Draw
+ *  }
+ * </pre>
+ * 
  * The following example demonstrates how a client should interact with this
  * interface to facilitate a full game session, including turn-taking and
  * error handling using the JSON state.
  * <pre>{@code
  * // 1. Initialize the game engine and start a session
  * // Optional: Pass "Black" to set Player 1 as Black
- * ConnectFour game = new ConnectFourImpl();
+ * ConnectFourJSON game = new ConnectFourImpl();
  * String state = game.startGame("Player1", "Player2", "Black");
  * // Initial render
  * printState(state);
@@ -51,8 +64,12 @@
  * <p><b>Note:</b> The String returned by all methods is a JSON-formatted
  * representation of the game state. Clients should parse this JSON to retrieve
  * the {@code cells}, {@code currentPlayer}, and {@code winner} status.</p>
+ * 
+ * @apiNote For player-player, player-computer, or computer-computer games, 
+ * clients can implement their own logic to determine moves and call takeTurn() accordingly.
+ * For example, computer players can be implemented with a simple random number generator to select columns
  */
-public interface ConnectFour {
+public interface ConnectFourJSON {
 
     /**
      * Initialize a new Connect 4 game with specified player names.
@@ -60,7 +77,7 @@ public interface ConnectFour {
      * <p>
      * Initializes an empty 6x7 board and allows for new turns to be played.
      * with RED as the current player (player1). Subsequent calls to startGame()
-     * will reset the game. Resets all cells to empty board.
+     * will erase any existing game and start a new game.
      * </p>
      *
      * <p>
@@ -93,7 +110,7 @@ public interface ConnectFour {
      * </code>
      *                                  </pre>
      * 
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String startGame(String player1, String player2, String player1CheckerPreference);
 
@@ -133,8 +150,8 @@ public interface ConnectFour {
      * game.startGame(null, "Bob");
      * </code>
      *                                  </pre>
-     *
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * 
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String startGame(String player1, String player2);
 
@@ -177,7 +194,7 @@ public interface ConnectFour {
      *         </ul>
      *
      * @see #startGame(String, String) for initial game creation with player names
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String resetGame();
 
@@ -205,7 +222,7 @@ public interface ConnectFour {
      *             <li>{{"error": "No game"}} — when no active game exists</li>
      *         </ul>
      *
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String endGame();
 
@@ -231,10 +248,13 @@ public interface ConnectFour {
      * specified column.
      * <br>
      * - The game state is updated to reflect the new move
+     * <br>
+     * - The currentPlayer is automatically updated to the next player in the JSON game state
      * </p>
      * 
      * @param column int [0-6] where the player wants to place their checker.
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see    ConnectFourJSON#getGameState() for the expected return JSON format
+     * @throws IndexOutOfBoundsException if the column is out of bounds (not between 0 and 6) or if the column is full.
      * @return the current game state in JSON format, or an error JSON if the
      *         move is invalid. 
      *         Error messages are {"error": "Invalid move"} or 
@@ -250,7 +270,7 @@ public interface ConnectFour {
      *     // Handle error case
      * }
      * </code>
-     * </pre>     
+     * </pre>
      */
     String takeTurn(int column);
 
@@ -282,21 +302,36 @@ public interface ConnectFour {
     </pre>
      * 
      * Where:
+     * <p>
      * - "cells" is a flat array representing the board from top-left to bottom-right,
      * with Checker if filled or null otherwise
+     * </p>
      * 
+     * <p>
      * - "currentPlayerChecker" indicates whose turn it is next,
      * with Checker or null otherwise
-     *
-     * - "currentPlayerName" shows the name of the current player
-     *
-     * - "player1Color" shows player 1's preferred color
-     *
-     * - "player2Color" shows player 2's preferred color
-     *
-     * - "winner" indicates the winning player, 
-     * with Checker or null otherwise
+     * </p>
      * 
+     * <p>
+     * - "currentPlayerName" shows the name of the current player
+     * </p>
+     * 
+     * <p>
+     * - "player1Color" shows player 1's preferred color
+     * </p>
+     * 
+     * <p>
+     * - "player2Color" shows player 2's preferred color
+     * </p>
+     * 
+     * <p>
+     * - "winner" indicates the winning player 
+     * with Checker, null if the game is still active, 
+     * or "Draw" if the game ended in a draw.
+     * </p>
+     * 
+     * @apiNote This is specifically useful for UIs to query the current game state
+     * and render it accordingly at any point during the game.
      * @see Checker for possible Checker values.
      * @return the current game state in JSON format
      */
