@@ -5,17 +5,29 @@
  * The first to achieve four pieces in a row horizontally or diagonally wins. 
  * All game states are maintained internally and exposed via JSON responses.
  * 
- * 
+ * <p>
+ * <strong style="font-family: Arial; font-size: 0.856em">Dependencies:</strong> 
+ * This API requires clients to parse JSON responses. This allows language-agnostic implementations 
+ * and encourages clean separation between game logic (backend) and UI (frontend). 
+ * In Java, for example, JSON libraries such as 
+ * <a href="https://github.com/FasterXML/jackson">Jackson</a> or 
+ * <a href="https://google.github.io/gson/">Gson</a> can be used.
+ *
+ * <p>
  * Game state JSON structure:
- <pre>
-    {
-        "cells": [null|"RED"|"BLACK"],   // 42 total cells
-        "currentPlayer": "RED"|"BLACK",  // Next player to move
-        "winner": "RED"|"BLACK"|null     // null = Active game
-    }
- </pre>
+ * <pre>
+ *  {
+ *      "cells": [null|"RED"|"BLACK"],   // 42 total cells
+ *      "currentPlayer": "RED"|"BLACK",  // Next player to move
+ *      "winner": "RED"|"BLACK"|"Draw"|null     // null = Active game, CHECKER = Winner, "Draw" = Draw
+ *  }
+ * </pre>
+ * 
+ * @apiNote For player-player, player-computer, or computer-computer games, 
+ * clients can implement their own logic to determine moves and call takeTurn() accordingly.
+ * For example, computer players can be implemented with a simple random number generator to select columns
  */
-public interface ConnectFour {
+public interface ConnectFourJSON {
 
     /**
      * Initialize a new Connect 4 game with specified player names.
@@ -23,7 +35,7 @@ public interface ConnectFour {
      * <p>
      * Initializes an empty 6x7 board and allows for new turns to be played.
      * with RED as the current player (player1). Subsequent calls to startGame()
-     * will reset the game. Resets all cells to empty board.
+     * will erase any existing game and start a new game.
      * </p>
      *
      * <p>
@@ -52,7 +64,7 @@ public interface ConnectFour {
      * </code>
      *                                  </pre>
      * 
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String startGame(String player1, String player2);
 
@@ -80,15 +92,14 @@ public interface ConnectFour {
      *             <li>{{"error": "No game"}} — when no active game exists</li>
      *         </ul>
      *
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      */
     String endGame();
 
     /**
-     * Conducts a game turn for the specified player and column.
+     * Conducts a game turn for the current player and column.
      * A turn involves placing the player's checker in the specified column,
      * allowing it to fall to the lowest unoccupied space.
-     * 
      * 
      * <p>
      * <strong style="font-family: Arial; font-size: 0.856em">Preconditions:</strong>
@@ -104,12 +115,14 @@ public interface ConnectFour {
      * - The player's checker is placed in the lowest available space in the specified column.
      * <br>
      * - The game state is updated to reflect the new move
+     * <br>
+     * - The currentPlayer is automatically updated to the next player in the JSON game state
      * </p>
      * 
      * @param column int [0-6] where the player wants to place their checker.
      * @throws IllegalArgumentException if the column is out of bounds (not between 0 and 6) or if the column is full.
      * @throws IllegalStateException if the game has not been started or has already ended.
-     * @see ConnectFour#getGameState() for the expected return JSON format
+     * @see ConnectFourJSON#getGameState() for the expected return JSON format
      * @return the current game state in JSON format
      */
     String takeTurn(int column);
@@ -139,15 +152,19 @@ public interface ConnectFour {
     </pre>
      * 
      * Where:
+     * <p>
      * - "cells" is a flat array representing the board from top-left to bottom-right,
      * with Checker if filled or null otherwise
-     * 
+     * <p>
      * - "currentPlayer" indicates whose turn it is next, 
      * with Checker or null otherwise
+     * <p>
+     * - "winner" indicates the winning player 
+     * with Checker, null if the game is still active, 
+     * or "Draw" if the game ended in a draw.
      * 
-     * - "winner" indicates the winning player, 
-     * with Checker or null otherwise
-     * 
+     * @apiNote This is specifically useful for UIs to query the current game state
+     * and render it accordingly at any point during the game.
      * @see Checker for possible Checker values.
      * @return the current game state in JSON format
      */
