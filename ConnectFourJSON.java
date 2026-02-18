@@ -61,9 +61,6 @@
  *  }
  *}
  *}</pre>
- * <p><b>Note:</b> The String returned by all methods is a JSON-formatted
- * representation of the game state. Clients should parse this JSON to retrieve
- * the {@code cells}, {@code currentPlayer}, and {@code winner} status.</p>
  * 
  * @apiNote For player-player, player-computer, or computer-computer games, 
  * clients can implement their own logic to determine moves and call takeTurn() accordingly.
