@@ -30,5 +30,5 @@ java TextClient
 
 2. Open the generated `docs/index.html` website in a web browser
 
-3. Navigate to `ConnectFourJSON` interface
+3. Navigate to `ConnectFourJSON.java` interface
 
